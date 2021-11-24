@@ -1,5 +1,5 @@
 {
-	"name": "vite-wc-test",
+	"name": "@webcomp/vue",
 	"version": "0.0.0",
 	"scripts": {
 		"dev": "vite",
