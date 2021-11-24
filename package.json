@@ -1,18 +1,21 @@
 {
-	"name": "vite-wc-test",
-	"version": "0.0.0",
+	"name": "web-component-dev",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
 	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"serve": "vite preview"
+		"install": "pnpm -r install",
+		"build": "pnpm -r run build"
 	},
-	"dependencies": {
-		"prismjs": "^1.25.0",
-		"vue": "^3.2.16"
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hugosp/VueViteWebComponents.git"
 	},
-	"devDependencies": {
-		"@vitejs/plugin-vue": "^1.9.3",
-		"sass": "^1.43.4",
-		"vite": "^2.6.4"
-	}
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/hugosp/VueViteWebComponents/issues"
+	},
+	"homepage": "https://github.com/hugosp/VueViteWebComponents#readme"
 }
