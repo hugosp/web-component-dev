@@ -1,11 +1,13 @@
-# Vue 3 + Vite + Web components
+# Webcomponents in diffrent languages
 
-externalized Vue
+Just some experiments
 
-### test in bundling web components from vue
+
+
+
+### VUE
 
 * Hello - Simple test with global store, communicating between components.
 * Code - Simple Prism Highlighter component
-
 
 script setup and options api tests.

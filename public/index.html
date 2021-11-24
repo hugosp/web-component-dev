@@ -6,8 +6,6 @@
 	<link rel="icon" href="/favicon.ico" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
-
-	<script src="https://unpkg.com/vue@next"></script>
 	<title>Vite App</title>
 
 	<style>
@@ -15,6 +13,10 @@
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 			gap: 10px;
+		}
+
+		.full-width {
+			grid-column: span 2;
 		}
 	</style>
 </head>
@@ -27,7 +29,7 @@
 		<hg-hello color="red"></hg-hello>
 
 
-		<hg-code>
+		<hg-code class="full-width">
 			if(test == 'test') {
 			doFluff();
 			}
@@ -37,7 +39,7 @@
 
 	</div>
 
-	<script src="/assets/vue/hg.umd.js"></script>
+	<script src="./assets/vue-wc.js" type="module"></script>
 </body>
 
 </html>
