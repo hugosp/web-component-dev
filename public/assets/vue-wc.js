@@ -3475,6 +3475,38 @@ function mergeProps(...args) {
   }
   return ret;
 }
+function renderList(source, renderItem, cache, index) {
+  let ret;
+  const cached = cache && cache[index];
+  if (isArray(source) || isString(source)) {
+    ret = new Array(source.length);
+    for (let i = 0, l = source.length; i < l; i++) {
+      ret[i] = renderItem(source[i], i, void 0, cached && cached[i]);
+    }
+  } else if (typeof source === "number") {
+    ret = new Array(source);
+    for (let i = 0; i < source; i++) {
+      ret[i] = renderItem(i + 1, i, void 0, cached && cached[i]);
+    }
+  } else if (isObject(source)) {
+    if (source[Symbol.iterator]) {
+      ret = Array.from(source, (item, i) => renderItem(item, i, void 0, cached && cached[i]));
+    } else {
+      const keys = Object.keys(source);
+      ret = new Array(keys.length);
+      for (let i = 0, l = keys.length; i < l; i++) {
+        const key = keys[i];
+        ret[i] = renderItem(source[key], key, i, cached && cached[i]);
+      }
+    }
+  } else {
+    ret = [];
+  }
+  if (cache) {
+    cache[index] = ret;
+  }
+  return ret;
+}
 function renderSlot(slots, name, props = {}, fallback, noSlotted) {
   if (currentRenderingInstance.isCE) {
     return createVNode("slot", name === "default" ? null : { name }, fallback && fallback());
@@ -4763,10 +4795,29 @@ const render = (...args) => {
   ensureRenderer().render(...args);
 };
 var store = {
-  messages: reactive([])
+  state: reactive({
+    messages: []
+  }),
+  addMessage: function(msg) {
+    console.log("adding message", msg);
+    this.state.messages.unshift(msg);
+  },
+  deleteMessage: function(index) {
+    console.log("deleting message", index);
+    this.state.messages.splice(index, 1);
+  }
 };
-const _hoisted_1$1 = /* @__PURE__ */ createBaseVNode("h4", null, "Chatto", -1);
-const _hoisted_2 = ["onKeydown"];
+var _style_0$1 = ".chat{display:grid;border:2px solid #aaa;padding:0 10px}.lines{overflow-y:scroll;height:200px;padding:5px}.lines li{display:grid;grid-template-columns:75px auto 30px}\n";
+var _export_sfc = (sfc, props) => {
+  for (const [key, val] of props) {
+    sfc[key] = val;
+  }
+  return sfc;
+};
+const _hoisted_1$1 = ["onKeydown"];
+const _hoisted_2 = { class: "lines" };
+const _hoisted_3 = ["onClick"];
+const _hoisted_4 = /* @__PURE__ */ createBaseVNode("summary", null, "DEBUG", -1);
 const _sfc_main$1 = {
   props: {
     color: {
@@ -4777,8 +4828,15 @@ const _sfc_main$1 = {
   setup(__props) {
     const props = __props;
     const text = ref("test");
+    const id = Math.floor(Math.random() * 1e6);
+    const deleteMsg = (i) => {
+      store.deleteMessage(i);
+    };
     const send = () => {
-      store.messages.push(text.value);
+      store.addMessage({
+        id,
+        msg: text.value
+      });
       text.value = "";
     };
     return (_ctx, _cache) => {
@@ -4786,19 +4844,34 @@ const _sfc_main$1 = {
         class: "chat",
         style: normalizeStyle({ color: props.color })
       }, [
-        _hoisted_1$1,
+        createBaseVNode("h4", null, "Chatto #" + toDisplayString(unref(id)), 1),
         withDirectives(createBaseVNode("input", {
           type: "text",
           onKeydown: withKeys(send, ["enter"]),
           "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => text.value = $event)
-        }, null, 40, _hoisted_2), [
+        }, null, 40, _hoisted_1$1), [
           [vModelText, text.value]
         ]),
-        createBaseVNode("pre", null, toDisplayString(JSON.stringify(unref(store).messages, null, 2)), 1)
+        createBaseVNode("ul", _hoisted_2, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(unref(store).state.messages, (item, i) => {
+            return openBlock(), createElementBlock("li", { key: i }, [
+              createBaseVNode("b", null, toDisplayString(item.id), 1),
+              createBaseVNode("span", null, toDisplayString(item.msg), 1),
+              createBaseVNode("button", {
+                onClick: ($event) => deleteMsg(i)
+              }, "X", 8, _hoisted_3)
+            ]);
+          }), 128))
+        ]),
+        createBaseVNode("details", null, [
+          _hoisted_4,
+          createBaseVNode("pre", null, toDisplayString(JSON.stringify(unref(store).state, null, 2)), 1)
+        ])
       ], 4);
     };
   }
 };
+var Hello = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var prism = { exports: {} };
 (function(module) {
@@ -6964,12 +7037,6 @@ Prism.languages.twig = {
   }
 };
 var _style_0 = 'code[class*=language-],pre[class*=language-]{color:#ccc;background:none;font-family:Consolas,Monaco,"Andale Mono","Ubuntu Mono",monospace;font-size:1em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*=language-],pre[class*=language-]{background:#2d2d2d}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal}.token.comment,.token.block-comment,.token.prolog,.token.doctype,.token.cdata{color:#999}.token.punctuation{color:#ccc}.token.tag,.token.attr-name,.token.namespace,.token.deleted{color:#e2777a}.token.function-name{color:#6196cc}.token.boolean,.token.number,.token.function{color:#f08d49}.token.property,.token.class-name,.token.constant,.token.symbol{color:#f8c555}.token.selector,.token.important,.token.atrule,.token.keyword,.token.builtin{color:#cc99cd}.token.string,.token.char,.token.attr-value,.token.regex,.token.variable{color:#7ec699}.token.operator,.token.entity,.token.url{color:#67cdcc}.token.important,.token.bold{font-weight:bold}.token.italic{font-style:italic}.token.entity{cursor:help}.token.inserted{color:green}pre,code{tab-size:2;white-space:normal;padding:2px}\n';
-var _export_sfc = (sfc, props) => {
-  for (const [key, val] of props) {
-    sfc[key] = val;
-  }
-  return sfc;
-};
 const _sfc_main = {
   name: "hg-code",
   props: {
@@ -7010,5 +7077,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ], 64);
 }
 var Code = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-customElements.define("hg-hello", defineCustomElement(_sfc_main$1));
+customElements.define("hg-hello", defineCustomElement(Hello));
 customElements.define("hg-code", defineCustomElement(Code));
